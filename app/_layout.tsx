@@ -1,24 +1,36 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { Slot, useRouter, useSegments } from 'expo-router';
+import { useEffect, useRef } from 'react';
+import { AuthProvider, useAuth } from '@/context/auth';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <AuthProvider>
+      <Guard />
+    </AuthProvider>
   );
+}
+
+function Guard() {
+  const { isSignedIn } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    // Let the Slot render at least once before navigating
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+
+    const inTabs = segments[0] === '(tabs)';
+
+    if (!isSignedIn && inTabs) {
+      router.replace('/login');
+    } else if (isSignedIn && segments[0] === 'login') {
+      router.replace('/(tabs)');
+    }
+  }, [isSignedIn, segments]);
+
+  return <Slot />;
 }

@@ -1,112 +1,355 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Platform, StyleSheet, View, Text, ScrollView, StatusBar } from 'react-native';
 import { Fonts } from '@/constants/theme';
 
-export default function TabTwoScreen() {
+const STUDENT = {
+  name: 'Stella Derano',
+  id: 'KEC - NTA525 - 015',
+  programme: 'Diploma in Electrical & Computer Engineering',
+  year: 'Year 2',
+  faculty: 'Computer Engineering',
+  gpa: '3.84',
+  credits: '94 / 120',
+  status: 'Active',
+  email: 'stelahderano@gmail.com',
+  phone: '+255 700 000 000',
+  photo: require('@/assets/images/stela.jpg'),
+};
+
+const INITIALS = STUDENT.name
+  .split(' ')
+  .map((n) => n[0])
+  .join('');
+
+const MODULES = [
+  { code: 'CS 301', title: 'Algorithms & Data Structures', grade: 'A', credits: 4 },
+  { code: 'CS 312', title: 'Operating Systems', grade: 'A−', credits: 3 },
+  { code: 'CS 324', title: 'Database Systems', grade: 'B+', credits: 3 },
+  { code: 'MT 211', title: 'Linear Algebra', grade: 'A', credits: 3 },
+];
+
+const GRADE_COLOR: Record<string, string> = {
+  A: '#22c55e',
+  'A−': '#4ade80',
+  'B+': '#facc15',
+  B: '#fb923c',
+};
+
+export default function ExploreScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <View style={styles.root}>
+      <StatusBar barStyle="dark-content" />
+
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Page label */}
+        <Text style={styles.pageLabel}>STUDENT ACADEMIC INFORMATION</Text>
+
+        {/* Profile row */}
+        <View style={styles.profileRow}>
+          <View style={styles.avatarWrap}>
+            {STUDENT.photo ? (
+              <Image
+                source={STUDENT.photo}
+                style={styles.avatar}
+                contentFit="cover"
+              />
+            ) : (
+              <View style={styles.avatar}>
+                <Text style={styles.avatarInitials}>{INITIALS}</Text>
+              </View>
+            )}
+          </View>
+
+          <View style={styles.profileMeta}>
+            <Text style={styles.profileName}>{STUDENT.name}</Text>
+            <Text style={styles.profileSub}>{STUDENT.programme}</Text>
+            <View style={styles.statusPill}>
+              <View style={styles.statusDot} />
+              <Text style={styles.statusText}>{STUDENT.status}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Divider */}
+        <View style={styles.divider} />
+
+        {/* Key stats */}
+        <View style={styles.statsRow}>
+          <Stat label="GPA" value={STUDENT.gpa} />
+          <View style={styles.statSep} />
+          <Stat label="Credits" value={STUDENT.credits} />
+          <View style={styles.statSep} />
+          <Stat label="Year" value={STUDENT.year.replace('Year ', '')} suffix="nd" />
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* Details grid */}
+        <Text style={styles.sectionLabel}>DETAILS</Text>
+        <View style={styles.grid}>
+          <DetailRow label="Student ID" value={STUDENT.id} mono />
+          <DetailRow label="Faculty" value={STUDENT.faculty} />
+          <DetailRow label="Email" value={STUDENT.email} mono />
+          <DetailRow label="Phone" value={STUDENT.phone} mono />
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* Current modules */}
+        <Text style={styles.sectionLabel}>CURRENT MODULES</Text>
+        <View style={styles.moduleList}>
+          {MODULES.map((m) => (
+            <View key={m.code} style={styles.moduleRow}>
+              <Text style={styles.moduleCode}>{m.code}</Text>
+              <Text style={styles.moduleTitle} numberOfLines={1}>{m.title}</Text>
+              <Text style={[styles.moduleGrade, { color: GRADE_COLOR[m.grade] ?? '#94a3b8' }]}>
+                {m.grade}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+      </ScrollView>
+    </View>
+  );
+}
+
+function Stat({
+  label,
+  value,
+  suffix,
+}: {
+  label: string;
+  value: string;
+  suffix?: string;
+}) {
+  return (
+    <View style={styles.stat}>
+      <View style={styles.statValueRow}>
+        <Text style={styles.statValue}>{value}</Text>
+        {suffix && <Text style={styles.statSuffix}>{suffix}</Text>}
+      </View>
+      <Text style={styles.statLabel}>{label}</Text>
+    </View>
+  );
+}
+
+function DetailRow({
+  label,
+  value,
+  mono,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+}) {
+  return (
+    <View style={styles.detailRow}>
+      <Text style={styles.detailLabel}>{label}</Text>
+      <Text style={[styles.detailValue, mono && styles.detailMono]}>{value}</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  root: {
+    flex: 1,
+    backgroundColor: '#f4f6ff',
   },
-  titleContainer: {
+  scroll: {
+    paddingTop: Platform.OS === 'ios' ? 64 : 44,
+    paddingBottom: 48,
+    paddingHorizontal: 24,
+  },
+
+  // Page label
+  pageLabel: {
+    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    fontSize: 10,
+    letterSpacing: 3,
+    color: '#000000',
+    marginBottom: 24,
+  },
+
+  // Profile
+  profileRow: {
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 24,
+  },
+  avatarWrap: {
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 8,
+    backgroundColor: '#e2e8f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarInitials: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#64748b',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+  profileMeta: {
+    flex: 1,
+    gap: 3,
+  },
+  profileName: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#0f172a',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    letterSpacing: -0.3,
+  },
+  profileSub: {
+    fontSize: 13,
+    color: '#64748b',
+    fontWeight: '500',
+  },
+  statusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginTop: 4,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#22c55e',
+  },
+  statusText: {
+    fontSize: 11,
+    color: '#22c55e',
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+
+  // Divider
+  divider: {
+    height: 1,
+    backgroundColor: '#e2e8f0',
+    marginVertical: 20,
+  },
+
+  // Stats
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  stat: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 3,
+  },
+  statValueRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 1,
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#0f172a',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    letterSpacing: -1,
+  },
+  statSuffix: {
+    fontSize: 13,
+    color: '#94a3b8',
+    marginBottom: 4,
+    fontWeight: '600',
+  },
+  statLabel: {
+    fontSize: 10,
+    color: '#94a3b8',
+    letterSpacing: 1.5,
+    fontWeight: '600',
+  },
+  statSep: {
+    width: 1,
+    height: 36,
+    backgroundColor: '#e2e8f0',
+  },
+
+  // Details
+  sectionLabel: {
+    fontSize: 10,
+    color: '#343435',
+    letterSpacing: 2.5,
+    fontWeight: '700',
+    marginBottom: 12,
+    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+  },
+  grid: {
+    gap: 0,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f5f9',
+  },
+  detailLabel: {
+    fontSize: 12,
+    color: '#94a3b8',
+    fontWeight: '600',
+    letterSpacing: 0.3,
+    flex: 1,
+  },
+  detailValue: {
+    fontSize: 13,
+    color: '#1e293b',
+    fontWeight: '600',
+    flex: 2,
+    textAlign: 'right',
+  },
+  detailMono: {
+    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    fontSize: 12,
+    color: '#475569',
+  },
+
+  // Modules
+  moduleList: {
+    gap: 0,
+  },
+  moduleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 11,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f5f9',
+    gap: 10,
+  },
+  moduleCode: {
+    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    fontSize: 11,
+    color: '#94a3b8',
+    width: 56,
+  },
+  moduleTitle: {
+    flex: 1,
+    fontSize: 13,
+    color: '#1e293b',
+    fontWeight: '500',
+  },
+  moduleGrade: {
+    fontSize: 13,
+    fontWeight: '800',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    width: 28,
+    textAlign: 'right',
   },
 });
